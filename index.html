@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSMとICD：診断分類体系を正しく理解する｜就労移行支援スタッフ向け</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --dsm-primary: #1D4ED8;
+    --dsm-light: #EFF6FF;
+    --dsm-mid: #93C5FD;
+    --icd-primary: #065F46;
+    --icd-light: #ECFDF5;
+    --icd-mid: #6EE7B7;
+    --accent: #B45309;
+    --accent-light: #FEF3C7;
+    --critical: #991B1B;
+    --critical-light: #FEF2F2;
+    --text-dark: #0F172A;
+    --text-mid: #334155;
+    --text-light: #64748B;
+    --bg: #F1F5F9;
+    --card: #FFFFFF;
+    --border: #E2E8F0;
+    --shadow: 0 4px 24px rgba(15,23,42,0.08);
+    --shadow-lg: 0 8px 40px rgba(15,23,42,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ─── HEADER ─── */
+  .hero {
+    background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 50%, #0D3B2E 100%);
+    color: #fff;
+    padding: 64px 24px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: rgba(29,78,216,0.12);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(6,95,70,0.12);
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    padding: 4px 16px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: #94A3B8;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(24px, 5vw, 42px);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero h1 span.dsm-hl { color: #93C5FD; }
+  .hero h1 span.icd-hl { color: #6EE7B7; }
+  .hero-sub {
+    font-size: 15px;
+    color: #94A3B8;
+    max-width: 560px;
+    margin: 0 auto 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badges {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: #CBD5E1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-badge i { font-size: 14px; }
+
+  /* ─── MAIN LAYOUT ─── */
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .section-block {
+    margin: 0;
+    padding: 48px 0;
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .section-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--text-dark);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+  .section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(20px, 4vw, 28px);
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .section-desc {
+    color: var(--text-mid);
+    font-size: 14px;
+    margin-bottom: 28px;
+    max-width: 640px;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .card-dsm {
+    border-left: 4px solid var(--dsm-primary);
+  }
+  .card-icd {
+    border-left: 4px solid var(--icd-primary);
+  }
+  .card-neutral {
+    border-left: 4px solid var(--accent);
+  }
+  .card-critical {
+    border-left: 4px solid var(--critical);
+    background: var(--critical-light);
+  }
+
+  /* ─── SCENE BOX (opening scene) ─── */
+  .scene-box {
+    background: linear-gradient(135deg, #F8FAFC, #EFF6FF);
+    border: 2px dashed #CBD5E1;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .scene-box::before {
+    content: '現場のシーン';
+    position: absolute;
+    top: -12px; left: 20px;
+    background: #475569;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 12px;
+    border-radius: 100px;
+  }
+  .scene-document {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px 24px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  .scene-document .doc-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 8px;
+  }
+  .code-highlight {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .code-icd { background: var(--icd-light); color: var(--icd-primary); }
+  .code-dsm { background: var(--dsm-light); color: var(--dsm-primary); }
+  .scene-thought {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    border: 1px solid #E2E8F0;
+    font-size: 14px;
+    color: var(--text-mid);
+    font-style: italic;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .scene-thought i { color: #94A3B8; margin-top: 2px; }
+
+  /* ─── DIVIDER ─── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+    padding: 0 0 12px;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .divider-icon {
+    width: 40px; height: 40px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 16px;
+  }
+
+  /* ─── PURPOSE TABLE ─── */
+  .purpose-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .purpose-cell {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .purpose-cell i {
+    font-size: 22px;
+    margin-bottom: 10px;
+    display: block;
+    color: var(--text-mid);
+  }
+  .purpose-cell .label { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .purpose-cell .desc { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+
+  /* ─── TIMELINE ─── */
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--border), var(--border));
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -25px;
+    top: 6px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--border);
+    background: var(--text-light);
+    transition: all 0.2s;
+  }
+  .timeline-item.dsm-item .timeline-dot { background: var(--dsm-primary); box-shadow: 0 0 0 2px var(--dsm-mid); }
+  .timeline-item.icd-item .timeline-dot { background: var(--icd-primary); box-shadow: 0 0 0 2px var(--icd-mid); }
+  .timeline-year {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 2px;
+  }
+  .timeline-item.dsm-item .timeline-year { color: var(--dsm-primary); }
+  .timeline-item.icd-item .timeline-year { color: var(--icd-primary); }
+  .timeline-content {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+  }
+  .timeline-item.dsm-item .timeline-content { border-left: 3px solid var(--dsm-primary); }
+  .timeline-item.icd-item .timeline-content { border-left: 3px solid var(--icd-primary); }
+  .timeline-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .timeline-body { font-size: 13px; color: var(--text-mid); }
+  .timeline-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-bottom: 6px;
+  }
+  .badge-dsm { background: var(--dsm-light); color: var(--dsm-primary); }
+  .badge-icd { background: var(--icd-light); color: var(--icd-primary); }
+  .badge-both { background: var(--accent-light); color: var(--accent); }
+
+  /* ─── MECHANISM BOXES ─── */
+  .mechanism-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-radius: 12px 12px 0 0;
+    color: #fff;
+  }
+  .mechanism-header.dsm-head { background: var(--dsm-primary); }
+  .mechanism-header.icd-head { background: var(--icd-primary); }
+  .mechanism-header i { font-size: 22px; }
+  .mechanism-header .mh-title { font-size: 18px; font-weight: 700; }
+  .mechanism-header .mh-sub { font-size: 12px; opacity: 0.8; }
+  .mechanism-body {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  /* ─── CRITERIA DIAGRAM ─── */
+  .criteria-box {
+    background: var(--dsm-light);
+    border: 2px solid var(--dsm-mid);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px 0;
+  }
+  .criteria-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--dsm-primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .criteria-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--dsm-mid);
+    font-size: 14px;
+  }
+  .criteria-item:last-child { border-bottom: none; }
+  .criteria-check {
+    width: 20px; height: 20px;
+    border-radius: 4px;
+    border: 2px solid var(--dsm-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-size: 10px;
+    color: var(--dsm-primary);
+    font-weight: 700;
+  }
+  .criteria-check.filled { background: var(--dsm-primary); color: #fff; }
+
+  /* ─── ICD STRUCTURE ─── */
+  .icd-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 16px 0;
+  }
+  .icd-tree-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .icd-tree-row.level-1 { background: var(--icd-primary); color: #fff; padding-left: 14px; }
+  .icd-tree-row.level-2 { background: #D1FAE5; color: var(--icd-primary); padding-left: 28px; }
+  .icd-tree-row.level-3 { background: var(--icd-light); color: #047857; padding-left: 44px; border: 1px solid var(--icd-mid); }
+  .icd-tree-row.level-4 { background: #fff; color: var(--text-mid); padding-left: 60px; border: 1px solid var(--border); }
+  .icd-tree-arrow { font-size: 10px; opacity: 0.6; }
+
+  /* ─── COMPARISON TABLE ─── */
+  .compare-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    margin: 20px 0;
+  }
+  .compare-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+  .compare-header > div {
+    padding: 14px 18px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .compare-header .ch-label { background: #F8FAFC; color: var(--text-light); }
+  .compare-header .ch-dsm { background: var(--dsm-primary); color: #fff; text-align: center; }
+  .compare-header .ch-icd { background: var(--icd-primary); color: #fff; text-align: center; }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    border-top: 1px solid var(--border);
+  }
+  .compare-row:nth-child(odd) { background: #FAFAFA; }
+  .compare-row > div {
+    padding: 14px 18px;
+    font-size: 14px;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+  }
+  .compare-row .cr-label { font-weight: 600; color: var(--text-dark); font-size: 13px; }
+  .compare-row .cr-dsm { color: var(--dsm-primary); font-weight: 500; justify-content: center; text-align: center; }
+  .compare-row .cr-icd { color: var(--icd-primary); font-weight: 500; justify-content: center; text-align: center; }
+  .compare-row > div i { font-size: 16px; }
+
+  /* ─── CASE STUDY ─── */
+  .case-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 0;
+  }
+  .case-tab {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .case-tab.dsm-tab { background: #E2E8F0; color: var(--text-light); }
+  .case-tab.dsm-tab.active { background: var(--dsm-primary); color: #fff; }
+  .case-tab.icd-tab { background: #E2E8F0; color: var(--text-light); }
+  .case-tab.icd-tab.active { background: var(--icd-primary); color: #fff; }
+  .case-content {
+    display: none;
+    background: var(--card);
+    border-radius: 0 0 12px 12px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+  .case-content.active { display: block; }
+  .criteria-group {
+    background: #F8FAFC;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    border: 1px solid var(--border);
+  }
+  .criteria-group-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .criteria-list { list-style: none; padding: 0; }
+  .criteria-list li {
+    font-size: 13px;
+    color: var(--text-mid);
+    padding: 5px 0;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .criteria-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--text-light);
+    font-size: 11px;
+  }
+  .important-note {
+    background: var(--accent-light);
+    border: 1px solid #FDE68A;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 12px 0;
+  }
+
+  /* ─── ACCORDION ─── */
+  .accordion-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    background: var(--card);
+  }
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .accordion-header:hover { background: #F8FAFC; }
+  .accordion-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .accordion-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .accordion-icon.critical { background: var(--critical-light); color: var(--critical); }
+  .accordion-icon.warning { background: var(--accent-light); color: var(--accent); }
+  .accordion-icon.info { background: var(--dsm-light); color: var(--dsm-primary); }
+  .accordion-icon.success { background: var(--icd-light); color: var(--icd-primary); }
+  .accordion-title { font-weight: 700; font-size: 15px; color: var(--text-dark); }
+  .accordion-sub { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .accordion-chevron {
+    color: var(--text-light);
+    transition: transform 0.3s;
+    font-size: 14px;
+  }
+  .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
+  .accordion-body {
+    display: none;
+    padding: 0 20px 20px;
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    border-top: 1px solid var(--border);
+  }
+  .accordion-item.open .accordion-body { display: block; }
+  .accordion-body p { margin-bottom: 10px; }
+  .accordion-body p:last-child { margin-bottom: 0; }
+  .accordion-body strong { color: var(--text-dark); }
+
+  /* ─── PRACTICAL GUIDE ─── */
+  .practical-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .practical-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+  .practical-card i {
+    font-size: 20px;
+    margin-bottom: 10px;
+    display: block;
+    color: var(--text-mid);
+  }
+  .practical-card .pc-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+  .practical-card .pc-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+  /* ─── SUMMARY BOXES ─── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 560px) {
+    .summary-grid { grid-template-columns: 1fr; }
+    .compare-header { grid-template-columns: 1.5fr 1fr 1fr; }
+    .compare-row { grid-template-columns: 1.5fr 1fr 1fr; }
+    .compare-row > div { font-size: 12px; padding: 10px 10px; }
+  }
+  .summary-card {
+    border-radius: 14px;
+    padding: 22px;
+    color: #fff;
+  }
+  .summary-card.dsm-card { background: linear-gradient(135deg, #1D4ED8, #1E40AF); }
+  .summary-card.icd-card { background: linear-gradient(135deg, #065F46, #047857); }
+  .summary-card .sc-title { font-weight: 700; font-size: 16px; margin-bottom: 12px; }
+  .summary-card ul { list-style: none; padding: 0; }
+  .summary-card ul li {
+    font-size: 13px;
+    padding: 5px 0;
+    padding-left: 18px;
+    position: relative;
+    opacity: 0.9;
+    line-height: 1.6;
+  }
+  .summary-card ul li::before { content: '✓'; position: absolute; left: 0; font-weight: 700; }
+
+  /* ─── KEY PRINCIPLE ─── */
+  .key-principle {
+    background: linear-gradient(135deg, #0F172A, #1E293B);
+    color: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    margin: 24px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .key-principle::before {
+    content: '"';
+    position: absolute;
+    top: -20px; left: 16px;
+    font-size: 120px;
+    opacity: 0.06;
+    font-family: serif;
+    line-height: 1;
+  }
+  .key-principle p {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(16px, 3vw, 20px);
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+    color: #E2E8F0;
+  }
+  .key-principle p strong { color: #fff; }
+
+  /* ─── STEP FLOW ─── */
+  .step-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    margin: 16px 0;
+  }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+  }
+  .step-num-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .step-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .step-num.dsm { background: var(--dsm-primary); }
+  .step-num.icd { background: var(--icd-primary); }
+  .step-num.both { background: var(--accent); }
+  .step-connector {
+    width: 2px;
+    flex: 1;
+    min-height: 24px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+  .step-content { padding-top: 6px; }
+  .step-label { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .step-desc { font-size: 13px; color: var(--text-mid); line-height: 1.7; }
+
+  /* ─── SOURCES ─── */
+  .sources-section {
+    background: #1E293B;
+    padding: 40px 24px;
+    color: #94A3B8;
+  }
+  .sources-title {
+    color: #E2E8F0;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .source-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #2D3748;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .source-item:last-child { border-bottom: none; }
+  .source-item a { color: #93C5FD; text-decoration: none; }
+  .source-item a:hover { text-decoration: underline; }
+  .source-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #2D3748;
+    color: #94A3B8;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: #0F172A;
+    color: #475569;
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+  }
+
+  /* ─── READING GUIDE ─── */
+  .reading-guide {
+    background: linear-gradient(to right, #EFF6FF, #ECFDF5);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    border: 1px solid #BFDBFE;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .rg-icon { font-size: 24px; color: var(--dsm-primary); flex-shrink: 0; }
+  .rg-text { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+  /* ─── HIGHLIGHT STRIP ─── */
+  .highlight-strip {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #78350F;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  /* ─── PILL ─── */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .pill-dsm { background: var(--dsm-light); color: var(--dsm-primary); }
+  .pill-icd { background: var(--icd-light); color: var(--icd-primary); }
+
+  /* ─── ANIMATION ─── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeInUp 0.5s ease forwards; }
+
+  /* ─── SCROLL INDICATOR ─── */
+  .scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--dsm-primary), var(--icd-primary));
+    z-index: 100;
+    transition: width 0.1s;
+  }
+
+  /* ─── INFO GRID ─── */
+  .info-row {
+    display: flex;
+    gap: 16px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+  }
+  .info-chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-mid);
+  }
+  .info-chip i { font-size: 13px; color: var(--text-light); }
+  .info-chip strong { color: var(--text-dark); }
+
+  /* ─── DIMENSION DIAGRAM ─── */
+  .dimension-chart {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+  }
+  .dim-title { font-size: 13px; font-weight: 700; margin-bottom: 16px; color: var(--text-mid); letter-spacing: 0.05em; }
+  .dim-bar-group { margin-bottom: 14px; }
+  .dim-label { font-size: 13px; font-weight: 600; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .dim-bar-bg { height: 10px; background: #E2E8F0; border-radius: 100px; overflow: hidden; }
+  .dim-bar-fill { height: 100%; border-radius: 100px; transition: width 1s ease; }
+  .dim-bar-fill.dsm { background: var(--dsm-primary); }
+  .dim-bar-fill.icd { background: var(--icd-primary); }
+
+  /* ─── SEPARATOR ─── */
+  hr.content-hr {
+    border: none;
+    border-top: 2px dashed var(--border);
+    margin: 32px 0;
+  }
+
+  /* icf note */
+  .icf-note {
+    background: linear-gradient(135deg, #F0FDF4, #ECFDF5);
+    border: 1px solid var(--icd-mid);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+  .icf-note-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--icd-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .icf-note p { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <div class="hero-tag">就労移行支援スタッフ向け 専門知識シリーズ</div>
+  <h1>
+    <span class="dsm-hl">DSM</span> と <span class="icd-hl">ICD</span><br>
+    診断分類体系を正しく理解する
+  </h1>
+  <p class="hero-sub">
+    「F84.0」と「299.00」—同じ状態を指しているのに、なぜ違う番号があるのか。<br>
+    2つの体系の仕組みと違いを、支援の現場から読み解く。
+  </p>
+  <div class="hero-badges">
+    <div class="hero-badge"><i class="fa-regular fa-clock"></i> 約5〜7分で読了</div>
+    <div class="hero-badge"><i class="fa-solid fa-layer-group"></i> DSM・ICD両方を解説</div>
+    <div class="hero-badge"><i class="fa-solid fa-triangle-exclamation"></i> 批判的視点も含む</div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="container">
+
+  <!-- 読み方ガイド -->
+  <div class="section-block" style="padding-bottom: 0">
+    <div class="reading-guide">
+      <i class="fa-solid fa-map fa-lg rg-icon"></i>
+      <div class="rg-text">
+        この図解は<strong>上から下へスクロール</strong>することで、「現場の問い」から「理論的な理解」を経て「批判的な視点」へと段階的に理解が深まるように設計されています。
+        <span style="margin-left: 8px; font-size: 12px; color: #6EE7B7">▼ クリックで展開するセクションがあります</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 1: 現場のシーン ─── -->
+  <div class="section-block">
+    <div class="section-label">
+      <div class="section-num">1</div>
+      <div class="section-tag">導入</div>
+    </div>
+    <h2 class="section-title">診断書を受け取ったとき、<br>あなたは何を読んでいるか？</h2>
+    <p class="section-desc">就労移行支援の現場では、日常的に「診断名」が登場します。しかしそこに記された番号や用語が、どの体系に基づくものかを正確に理解している支援者は多くありません。</p>
+
+    <div class="scene-box">
+      <div style="font-size: 14px; color: var(--text-mid); margin-bottom: 16px; line-height: 1.7;">
+        Aさんが主治医の診断書と心理士のアセスメント報告書を持って来所した。書類を開くと、それぞれに異なる番号と用語が記載されている。
+      </div>
+
+      <div class="scene-document">
+        <div class="doc-label">診断書（精神科・主治医より）</div>
+        <div style="color: var(--text-dark); font-size: 14px; line-height: 1.8;">
+          傷病名：<strong>自閉スペクトラム症</strong><br>
+          ICD-10コード：<span class="code-highlight code-icd">F84.0</span>（小児自閉症）<br>
+          <span style="font-size: 12px; color: var(--text-light);">※ 保険請求・行政申請に使用</span>
+        </div>
+      </div>
+
+      <div class="scene-document" style="margin-top: 8px;">
+        <div class="doc-label">心理アセスメント報告書（公認心理師より）</div>
+        <div style="color: var(--text-dark); font-size: 14px; line-height: 1.8;">
+          診断分類：<strong>Autism Spectrum Disorder（ASD）</strong><br>
+          準拠基準：<span class="code-highlight code-dsm">DSM-5 299.00</span><br>
+          <span style="font-size: 12px; color: var(--text-light);">※ 研究・臨床判断に使用</span>
+        </div>
+      </div>
+
+      <div class="scene-thought" style="margin-top: 12px;">
+        <i class="fa-regular fa-comment-dots fa-lg"></i>
+        <span>「F84.0と299.00…同じAさんのことを指しているのに、なぜ2つの番号があるのか。ICDとDSMって何が違うのだろう？どちらを信頼すればいいのか？」</span>
+      </div>
+    </div>
+
+    <div class="highlight-strip">
+      <i class="fa-solid fa-lightbulb"></i>
+      <div>
+        <strong>これは二つの異なる「診断の地図」の存在を示しています。</strong><br>
+        どちらも「Aさんが自閉スペクトラム症である」という同じ事実を表していますが、それぞれ異なる目的・機関・使われ方を持った体系から生まれた番号です。この図解では、その2つの「地図」の仕組みと違いを丁寧に解説します。
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="divider-icon"><i class="fa-solid fa-arrows-down-to-line"></i></div></div>
+
+  <!-- ─── SECTION 2: 分類とは何か ─── -->
+  <div class="section-block">
+    <div class="section-label">
+      <div class="section-num">2</div>
+      <div class="section-tag">前提知識</div>
+    </div>
+    <h2 class="section-title">「病気を分類する」<br>とはどういうことか</h2>
+    <p class="section-desc">診断体系を理解する前に、なぜ医学が「分類」という行為を必要とするのかを押さえておく必要があります。</p>
+
+    <div class="card">
+      <p style="font-size: 14px; color: var(--text-mid); margin-bottom: 20px; line-height: 1.8;">
+        医師が「あなたはXXです」と診断するとき、その診断名は単なるラベルではありません。<strong>それは、過去の膨大な臨床観察と研究を積み上げた「パターンの認識」</strong>です。同じパターンを持つ人々をまとめることで、初めて「どのような治療が効くか」「どのような経過をたどるか」を予測・共有できるようになります。
+      </p>
+      <div class="purpose-grid">
+        <div class="purpose-cell">
+          <i class="fa-solid fa-stethoscope"></i>
+          <div class="label">臨床判断</div>
+          <div class="desc">治療方針の<br>選択・共有</div>
+        </div>
+        <div class="purpose-cell">
+          <i class="fa-solid fa-flask"></i>
+          <div class="label">研究基盤</div>
+          <div class="desc">同じ条件での<br>研究を可能に</div>
+        </div>
+        <div class="purpose-cell">
+          <i class="fa-solid fa-chart-bar"></i>
+          <div class="label">疫学統計</div>
+          <div class="desc">有病率・死因<br>の把握</div>
+        </div>
+        <div class="purpose-cell">
+          <i class="fa-solid fa-file-invoice"></i>
+          <div class="label">保険・行政</div>
+          <div class="desc">給付・請求の<br>根拠</div>
+        </div>
+        <div class="purpose-cell">
+          <i class="fa-solid fa-comments"></i>
+          <div class="label">専門家間の<br>共通言語</div>
+          <div class="desc">職種を超えた<br>情報共有</div>
+        </div>
+      </div>
+      <div class="highlight-strip" style="margin-top: 16px;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+          <strong>重要な前提：</strong>
+          分類体系はあくまで「現時点での私たちの理解の反映」であり、自然界に絶対的に存在する境界線ではありません。同じ診断名でも、人によって症状の現れ方・重さ・背景は大きく異なります。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="divider-icon"><i class="fa-solid fa-arrows-down-to-line"></i></div></div>
+
+  <!-- ─── SECTION 3: ICDとは ─── -->
+  <div class="section-block">
+    <div class="section-label">
+      <div class="section-num">3</div>
+      <div class="section-tag">第一の分類体系</div>
+    </div>
+    <h2 class="section-title" style="color: var(--icd-primary);">ICD とは何か</h2>
+    <p class="section-desc">International Classification of Diseases（国際疾病分類）——日本の医療現場で最も広く使われている分類体系です。</p>
+
+    <div class="mechanism-header icd-head" style="border-radius: 12px 12px 0 0;">
+      <i class="fa-solid fa-earth-asia"></i>
+      <div>
+        <div class="mh-title">ICD（国際疾病分類）</div>
+        <div class="mh-sub">WHO（世界保健機関）が作成・管理する、世界標準の疾病分類体系</div>
+      </div>
+    </div>
+    <div class="mechanism-body">
+      <div class="info-row">
+        <div class="info-chip"><i class="fa-solid fa-building-columns"></i> <strong>発行：</strong>WHO（世界保健機関）</div>
+        <div class="info-chip"><i class="fa-solid fa-globe"></i> <strong>使用国：</strong>194ヵ国（WHO加盟国）</div>
+        <div class="info-chip"><i class="fa-solid fa-layer-group"></i> <strong>対象：</strong>全疾患（精神障害含む）</div>
+      </div>
+
+      <h4 style="margin: 20px 0 10px; font-size: 14px; color: var(--text-mid); font-weight: 700; letter-spacing: 0.05em;">ICDの構造：すべての病気・健康状態を体系化する</h4>
+      <div class="icd-tree">
+        <div class="icd-tree-row level-1">
+          <i class="fa-solid fa-book-medical"></i> ICD（全疾患を対象とする）
+        </div>
+        <div class="icd-tree-row level-2">
+          <i class="fa-solid fa-arrow-turn-down icd-tree-arrow"></i>
+          <i class="fa-solid fa-heart-pulse"></i> 第1章：感染症・寄生虫症
+        </div>
+        <div class="icd-tree-row level-2">
+          <i class="fa-solid fa-arrow-turn-down icd-tree-arrow"></i>
+          <i class="fa-solid fa-ribbon"></i> 第2章：悪性新生物（がん）
+        </div>
+        <div class="icd-tree-row level-2" style="background: #A7F3D0; font-weight: 700;">
+          <i class="fa-solid fa-arrow-turn-down icd-tree-arrow"></i>
+          <i class="fa-solid fa-brain"></i> 第6章（ICD-11）：精神・行動・神神経発達の障害 ← ここに注目
+        </div>
+        <div class="icd-tree-row level-3">
+          <i class="fa-solid fa-arrow-turn-down icd-tree-arrow"></i>
+          6A00〜6A0Z：神経発達症（自閉スペクトラム症など）
+        </div>
+        <div class="icd-tree-row level-3">
+          <i class="fa-solid fa-arrow-turn-down icd-tree-arrow"></i>
+          6A40〜6A4Z：統合失調症スペクトラム
+        </div>
+        <div class="icd-tree-row level-3">
+          <i class="fa-solid fa-arrow-turn-down icd-tree-arrow"></i>
+          6A70〜6A7Z：双極症・関連症群
+        </div>
+        <div class="icd-tree-row level-4">
+          <i class="fa-solid fa-arrow-turn-down icd-tree-arrow"></i>
+          （ICD-10では F80〜F89：心理的発達の障害 など）
+        </div>
+        <div class="icd-tree-row level-2">
+          <i class="fa-solid fa-arrow-turn-down icd-tree-arrow"></i>
+          <i class="fa-solid fa-bone"></i> 第13章：筋骨格系の疾患…（以降、全22章）
+        </div>
+      </div>
+
+      <div class="highlight-strip">
+        <i class="fa-solid fa-lightbulb"></i>
+        <div><strong>ICDの最大の特徴：</strong>精神障害はICDの「一章」に過ぎません。がん・骨折・感染症と同じ体系の中に位置づけられており、すべての疾患に共通する番号（コード）で管理されます。</div>
+      </div>
+
+      <h4 style="margin: 24px 0 14px; font-size: 14px; color: var(--text-mid); font-weight: 700; letter-spacing: 0.05em;">ICDの歴史：19世紀の死因統計から始まった</h4>
+      <div class="timeline">
+        <div class="timeline-item icd-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-badge badge-icd">ICD前身</div>
+            <div class="timeline-year">1893年</div>
+            <div class="timeline-title">国際死因分類の誕生</div>
+            <div class="timeline-body">「人々は何で死んでいるか」を国際的に比較するため、死因分類が作られたのが起源。当初は精神障害を含まなかった。</div>
+          </div>
+        </div>
+        <div class="timeline-item icd-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-badge badge-icd">ICD-6</div>
+            <div class="timeline-year">1948年</div>
+            <div class="timeline-title">WHOが管理を引き継ぎ、精神障害章を追加</div>
+            <div class="timeline-body">第二次世界大戦後、WHOが設立され、ICDを引き継ぐ。初めて精神障害の分類章（当時は26項目）が含まれた。</div>
+          </div>
+        </div>
+        <div class="timeline-item icd-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-badge badge-icd">ICD-10</div>
+            <div class="timeline-year">1992年</div>
+            <div class="timeline-title">日本でも採用された現行基準</div>
+            <div class="timeline-body">現在も日本の医療・行政・保険請求の主流。精神障害はFコード（F00〜F99）で表される。臨床用と研究用の2種類の基準を持つ柔軟な設計。</div>
+          </div>
+        </div>
+        <div class="timeline-item icd-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-badge badge-icd">ICD-11</div>
+            <div class="timeline-year">2019年採択 / 2022年発効</div>
+            <div class="timeline-title">デジタル時代の新基準（日本は移行中）</div>
+            <div class="timeline-body">大幅改訂。複雑性PTSD・ゲーム症の追加、アスペルガー症候群を自閉スペクトラム症に統合、コードをF系からアルファベット＋数字に変更（例：6A00）。日本は2023年より導入準備中。</div>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="margin: 24px 0 10px; font-size: 14px; color: var(--text-mid); font-weight: 700; letter-spacing: 0.05em;">ICDの診断ガイドラインの特徴：「柔軟な臨床指針」</h4>
+      <div class="criteria-box" style="background: var(--icd-light); border-color: var(--icd-mid);">
+        <div class="criteria-title" style="color: var(--icd-primary);">
+          <i class="fa-solid fa-list-check"></i> ICD-10 F84.0（小児自閉症）の診断ガイドラインのアプローチ（概略）
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check filled" style="border-color: var(--icd-primary); background: var(--icd-primary);">✓</div>
+          <div>3歳未満に発現した発達の異常／遅延</div>
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check filled" style="border-color: var(--icd-primary); background: var(--icd-primary);">✓</div>
+          <div>社会的相互作用の質的障害</div>
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check filled" style="border-color: var(--icd-primary); background: var(--icd-primary);">✓</div>
+          <div>コミュニケーションの質的障害</div>
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check filled" style="border-color: var(--icd-primary); background: var(--icd-primary);">✓</div>
+          <div>限定的・反復的・常同的な行動・興味・活動</div>
+        </div>
+        <div style="margin-top: 12px; font-size: 13px; color: var(--icd-primary); background: #D1FAE5; border-radius: 6px; padding: 10px 12px;">
+          <strong>特徴：</strong>具体的な「〇項目中〇項目を満たすこと」という厳密な数え方よりも、<strong>臨床全体の印象・パターン</strong>に基づく診断を重視。臨床場面での実用性を優先した「ガイドライン」的性格を持つ。
+        </div>
+      </div>
+
+      <hr class="content-hr">
+
+      <h4 style="margin: 0 0 14px; font-size: 14px; color: var(--text-mid); font-weight: 700; letter-spacing: 0.05em;">
+        <i class="fa-solid fa-code-compare" style="margin-right: 8px; color: var(--icd-primary);"></i>ICD-10 と ICD-11 の違い
+      </h4>
+      <div style="background: var(--icd-light); border: 1px solid var(--icd-mid); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div style="background: #fff; border-radius: 10px; padding: 16px; border: 1px solid var(--icd-mid);">
+            <div style="font-weight:700; color:var(--icd-primary); font-size:14px; margin-bottom:10px;"><span class="pill pill-icd">ICD-10</span> 1992年〜</div>
+            <ul style="list-style:none; padding:0; font-size:13px; color:var(--text-mid);">
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>精神障害：Fコード（F00〜F99）</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>アスペルガー症候群を別診断に設定</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>臨床用・研究用の2種類の基準を併記</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>日本の現在の主流（移行準備中）</li>
+            </ul>
+          </div>
+          <div style="background: #fff; border-radius: 10px; padding: 16px; border: 2px solid var(--icd-primary);">
+            <div style="font-weight:700; color:var(--icd-primary); font-size:14px; margin-bottom:10px;"><span class="pill pill-icd">ICD-11</span> 2022年発効</div>
+            <ul style="list-style:none; padding:0; font-size:13px; color:var(--text-mid);">
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>精神障害：アルファベット＋数字（6A00〜）</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>アスペルガーをASDに統合・廃止</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>複雑性PTSD・ゲーム症を新設</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>デジタル対応・DSM-5との整合強化</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--text-mid); margin-bottom:10px;">ICD-11で変わった主な精神障害の扱い（就労支援で特に関連するもの）</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+
+          <div style="background:#fff; border-radius:8px; padding:12px 16px; border-left:3px solid var(--icd-primary); font-size:13px;">
+            <strong style="color:var(--icd-primary);">自閉症関連の大幅整理</strong><br>
+            <span style="color:var(--text-mid);">ICD-10の「小児自閉症（F84.0）」「アスペルガー症候群（F84.5）」「特定不能の広汎性発達障害（F84.9）」等を廃止し、すべて<strong>「自閉スペクトラム症（6A02）」に統合</strong>。知的・言語機能の有無を別軸（qualifier）で記録する方式に変更。</span>
+          </div>
+
+          <div style="background:#fff; border-radius:8px; padding:12px 16px; border-left:3px solid var(--icd-primary); font-size:13px;">
+            <strong style="color:var(--icd-primary);">複雑性PTSD（6B41）の新設</strong><br>
+            <span style="color:var(--text-mid);">虐待・DV・拉致監禁など長期反復的トラウマによるものを、従来のPTSDと分けて独立診断に。感情調整困難・否定的自己概念・対人関係の困難を追加症状として含む。ICD-11での新設でDSM-5にはない概念。</span>
+          </div>
+
+          <div style="background:#fff; border-radius:8px; padding:12px 16px; border-left:3px solid var(--icd-primary); font-size:13px;">
+            <strong style="color:var(--icd-primary);">ゲーム症（6C51）の追加</strong><br>
+            <span style="color:var(--text-mid);">ゲームへのコントロール喪失・日常生活への支障が12ヵ月以上持続するものを新診断として設置。DSM-5ではまだ「研究が必要な状態」（付録）にとどまっている。</span>
+          </div>
+
+          <div style="background:#fff; border-radius:8px; padding:12px 16px; border-left:3px solid var(--accent); font-size:13px;">
+            <strong style="color:var(--accent);">「性同一性障害」の分類変更（脱精神障害化）</strong><br>
+            <span style="color:var(--text-mid);">ICD-10では精神障害の章に「性同一性障害（F64）」として分類されていたが、ICD-11では<strong>精神障害の章から削除</strong>され、「性の健康に関連する状態（HA60 性別不合）」として別章に移動。「病気」ではなく「多様性」として捉え直す大きな転換。</span>
+          </div>
+
+          <div style="background:#fff; border-radius:8px; padding:12px 16px; border-left:3px solid #94A3B8; font-size:13px;">
+            <strong style="color:var(--text-mid);">コードの体系変更</strong><br>
+            <span style="color:var(--text-mid);">ICD-10の「Fコード」からICD-11では「アルファベット1字＋数字2桁（例：6A02）」に変更。55,000以上のコードを収録し、デジタルシステムとの連携を強化。電子カルテへの実装が容易になった。</span>
+          </div>
+        </div>
+
+        <div class="important-note" style="margin-top:14px; background:var(--icd-light); border-color:var(--icd-mid); color:var(--icd-primary);">
+          <i class="fa-solid fa-circle-info" style="margin-top:2px; color:var(--icd-primary);"></i>
+          <div><strong>日本の現状（2024年時点）：</strong>日本の医療機関・行政は現在もICD-10を主として使用しています。厚生労働省はICD-11への移行を進めていますが、電子カルテ・診療報酬・行政統計システムすべての対応が必要なため、完全移行には数年かかる見通しです。支援現場で受け取る書類の多くはまだICD-10コード（Fコード）で記載されています。</div>
+        </div>
+      </div>
+
+      <h4 style="margin: 24px 0 10px; font-size: 14px; color: var(--text-mid); font-weight: 700; letter-spacing: 0.05em;">日本との関係</h4>
+      <div class="step-flow">
+        <div class="step-item">
+          <div class="step-num-wrap">
+            <div class="step-num icd"><i class="fa-solid fa-hospital"></i></div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-label">医師が診断し、ICDコードで記録</div>
+            <div class="step-desc">精神科・内科等の医師は診断後、ICD-10（日本ではまだ主流）のFコードで疾病分類を記録する。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num-wrap">
+            <div class="step-num icd"><i class="fa-solid fa-file-medical"></i></div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-label">保険請求・行政申請に使われる</div>
+            <div class="step-desc">医療費の保険請求、障害年金・自立支援医療の申請、統計調査——すべてICDコードを通じて処理される。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num-wrap">
+            <div class="step-num icd"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+          </div>
+          <div class="step-content">
+            <div class="step-label">ICD-11への移行準備中（2023年〜）</div>
+            <div class="step-desc">厚生労働省は2023年よりICD-11の導入準備を開始。完全移行後は診断名・コード体系が変化する。「アスペルガー症候群」の診断名が「自閉スペクトラム症（6A02）」に一本化される等。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="divider-icon"><i class="fa-solid fa-arrows-down-to-line"></i></div></div>
+
+  <!-- ─── SECTION 4: DSMとは ─── -->
+  <div class="section-block">
+    <div class="section-label">
+      <div class="section-num">4</div>
+      <div class="section-tag">第二の分類体系</div>
+    </div>
+    <h2 class="section-title" style="color: var(--dsm-primary);">DSM とは何か</h2>
+    <p class="section-desc">Diagnostic and Statistical Manual of Mental Disorders（精神障害の診断・統計マニュアル）——精神障害に特化した診断基準書です。</p>
+
+    <div class="mechanism-header dsm-head" style="border-radius: 12px 12px 0 0;">
+      <i class="fa-solid fa-book"></i>
+      <div>
+        <div class="mh-title">DSM（精神障害の診断・統計マニュアル）</div>
+        <div class="mh-sub">米国精神医学会（APA）が作成する、精神障害専門の診断基準書</div>
+      </div>
+    </div>
+    <div class="mechanism-body">
+      <div class="info-row">
+        <div class="info-chip"><i class="fa-solid fa-building-columns"></i> <strong>発行：</strong>米国精神医学会（APA）</div>
+        <div class="info-chip"><i class="fa-solid fa-brain"></i> <strong>対象：</strong>精神障害のみ</div>
+        <div class="info-chip"><i class="fa-solid fa-flask"></i> <strong>主用途：</strong>臨床・研究</div>
+      </div>
+
+      <h4 style="margin: 20px 0 14px; font-size: 14px; color: var(--text-mid); font-weight: 700; letter-spacing: 0.05em;">DSMの歴史：「操作的診断基準」の革命</h4>
+      <div class="timeline">
+        <div class="timeline-item dsm-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-badge badge-dsm">DSM-I</div>
+            <div class="timeline-year">1952年</div>
+            <div class="timeline-title">初版：戦後の精神科臨床から生まれた</div>
+            <div class="timeline-body">第二次世界大戦後、軍人の精神的問題への対応経験から生まれた。精神分析理論の影響が強く、診断は主観的・理論依存的だった（106疾患）。</div>
+          </div>
+        </div>
+        <div class="timeline-item dsm-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-badge badge-dsm">DSM-III</div>
+            <div class="timeline-year">1980年 ★革命的変化</div>
+            <div class="timeline-title">操作的診断基準の導入：精神医学の転換点</div>
+            <div class="timeline-body">「精神分析の理論ではなく、観察可能な症状・行動・期間・機能障害」で診断する「操作的基準」を採用。診断の信頼性（再現性）が劇的に向上。研究・製薬開発の基盤に。Robert Spitzerが主導。</div>
+          </div>
+        </div>
+        <div class="timeline-item dsm-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-badge badge-dsm">DSM-IV</div>
+            <div class="timeline-year">1994年</div>
+            <div class="timeline-title">アスペルガー障害・PTSD等の精緻化</div>
+            <div class="timeline-body">多軸診断（5軸）システム採用。臨床症状・人格障害・身体疾患・心理社会的ストレス・機能レベルを別々に評価。ICDとの調整も図られた。</div>
+          </div>
+        </div>
+        <div class="timeline-item dsm-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-badge badge-dsm">DSM-5</div>
+            <div class="timeline-year">2013年（DSM-5-TR 2022年）</div>
+            <div class="timeline-title">スペクトラム概念・多軸廃止・文化的配慮の強化</div>
+            <div class="timeline-body">「アスペルガー障害」を廃止し「自閉スペクトラム症（ASD）」に一本化。多軸診断を廃止。ディメンション（程度）的な評価の導入。喪失後の悲嘆への適用見直しなど多くの論争を呼んだ改訂。2022年のTR版でProlonged Grief Disorder追加。</div>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="margin: 24px 0 10px; font-size: 14px; color: var(--text-mid); font-weight: 700; letter-spacing: 0.05em;">DSMの診断基準の構造：「操作的基準」とはどういう意味か</h4>
+      <div class="criteria-box">
+        <div class="criteria-title">
+          <i class="fa-solid fa-list-check"></i> DSM-5 自閉スペクトラム症（299.00）の診断基準のアプローチ（概略）
+        </div>
+        <div style="font-size: 13px; margin-bottom: 12px; color: var(--dsm-primary); background: #DBEAFE; border-radius: 6px; padding: 8px 12px;">
+          <strong>A基準：</strong>以下の3点すべてを満たす必要がある（必須）
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check filled">A1</div>
+          <div><strong>社会的・情緒的相互性の欠陥</strong>（例：異常な社会的アプローチ、会話の往復ができない等）</div>
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check filled">A2</div>
+          <div><strong>非言語的コミュニケーション行動の欠陥</strong>（視線・表情・身振りの統合が不十分等）</div>
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check filled">A3</div>
+          <div><strong>関係性の発展・維持・理解の欠陥</strong></div>
+        </div>
+        <div style="font-size: 13px; margin: 12px 0; color: var(--dsm-primary); background: #DBEAFE; border-radius: 6px; padding: 8px 12px;">
+          <strong>B基準：</strong>以下4項目のうち<strong>少なくとも2項目</strong>を満たす（ポリテティック）
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check">B1</div>
+          <div>常同的または反復的な運動、物の使用、会話</div>
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check">B2</div>
+          <div>同一性への固執、習慣への頑固なこだわり</div>
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check">B3</div>
+          <div>きわめて限定された固執した興味</div>
+        </div>
+        <div class="criteria-item">
+          <div class="criteria-check">B4</div>
+          <div>感覚刺激に対する過敏さまたは鈍感さ</div>
+        </div>
+        <div style="margin-top: 12px; font-size: 13px; color: var(--dsm-primary); background: #DBEAFE; border-radius: 6px; padding: 10px 12px;">
+          さらに<strong>C（幼少期から存在）・D（社会的機能障害）・E（他障害では説明できない）</strong>も必須。重症度のspecifierも付記。
+        </div>
+      </div>
+
+      <div class="highlight-strip">
+        <i class="fa-solid fa-lightbulb"></i>
+        <div>
+          <strong>「ポリテティック基準」とは：</strong>DSMの診断の多くは「X項目のうちY項目を満たせばよい」という仕組みを持ちます。例えばB基準は「4項目のうち2項目以上」。つまり、同じASDの診断名がついた人でも、組み合わせによって<strong>まったく異なるプロフィール</strong>になりえます。診断名は均質な集団を意味しません。
+        </div>
+      </div>
+
+      <hr class="content-hr">
+
+      <h4 style="margin: 0 0 14px; font-size: 14px; color: var(--text-mid); font-weight: 700; letter-spacing: 0.05em;">
+        <i class="fa-solid fa-code-compare" style="margin-right: 8px; color: var(--dsm-primary);"></i>DSM-5 と DSM-5-TR の違い
+      </h4>
+      <div style="background: var(--dsm-light); border: 1px solid var(--dsm-mid); border-radius: 12px; padding: 20px; margin-bottom: 8px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div style="background: #fff; border-radius: 10px; padding: 16px; border: 1px solid var(--dsm-mid);">
+            <div style="font-weight: 700; color: var(--dsm-primary); font-size: 14px; margin-bottom: 10px;"><span class="pill pill-dsm">DSM-5</span> 2013年</div>
+            <ul style="list-style:none; padding:0; font-size:13px; color:var(--text-mid);">
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>大幅改訂版として刊行</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>多軸診断を廃止</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>スペクトラム概念を本格導入</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>一部の記述・用語に誤記あり</li>
+            </ul>
+          </div>
+          <div style="background: #fff; border-radius: 10px; padding: 16px; border: 2px solid var(--dsm-primary);">
+            <div style="font-weight: 700; color: var(--dsm-primary); font-size: 14px; margin-bottom: 10px;"><span class="pill pill-dsm">DSM-5-TR</span> 2022年</div>
+            <ul style="list-style:none; padding:0; font-size:13px; color:var(--text-mid);">
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>TR＝Text Revision（テキスト改訂）</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>診断基準の本質的変更は<strong style="color:var(--dsm-primary);">なし</strong></li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>記述文・症状説明の誤記を修正</li>
+              <li style="padding:4px 0 4px 16px; position:relative;"><span style="position:absolute;left:0;">▸</span>新診断の追加・文化配慮の強化</li>
+            </ul>
+          </div>
+        </div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-mid); margin-bottom:10px;">DSM-5-TR で追加・更新された主な内容</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="background:#fff; border-radius:8px; padding:12px 16px; border-left:3px solid var(--dsm-primary); font-size:13px;">
+            <strong style="color:var(--dsm-primary);">新診断①：Prolonged Grief Disorder（遷延性悲嘆症）</strong><br>
+            <span style="color:var(--text-mid);">大切な人を亡くして1年以上（子どもは6ヵ月以上）経過後も、強烈な悲嘆が日常生活を著しく障害している状態。「病的な悲嘆」を独立した診断として認めた。</span>
+          </div>
+          <div style="background:#fff; border-radius:8px; padding:12px 16px; border-left:3px solid var(--dsm-primary); font-size:13px;">
+            <strong style="color:var(--dsm-primary);">新診断②：興奮薬誘発性軽度神経認知障害</strong><br>
+            <span style="color:var(--text-mid);">覚醒剤等の興奮薬の使用に関連した認知機能障害。</span>
+          </div>
+          <div style="background:#fff; border-radius:8px; padding:12px 16px; border-left:3px solid var(--accent); font-size:13px;">
+            <strong style="color:var(--accent);">文化的配慮の強化：</strong><span style="color:var(--text-mid);">各診断における文化的表現の差異・人種的・民族的格差に関する記述を大幅に充実。</span>
+          </div>
+        </div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-mid); margin: 16px 0 10px; letter-spacing: 0.05em;">
+          <i class="fa-solid fa-language" style="margin-right:6px; color:var(--dsm-primary);"></i>【日本語版で起きた重要な変化】「障害」から「症」への統一
+        </div>
+        <div style="background:#fff; border-radius:8px; padding:16px; border: 2px solid var(--dsm-primary); font-size:13px; margin-bottom:8px;">
+          <p style="color:var(--text-mid); margin-bottom:12px; line-height:1.8;">
+            <strong style="color:var(--dsm-primary);">DSM-5日本語版（2014年）</strong>では、英語の "disorder" の訳として「障害」と「症」が<strong>併記</strong>されていました。<br>
+            例：「自閉スペクトラム症／<span style="text-decoration:line-through; color:#94A3B8;">自閉症スペクトラム障害</span>」
+          </p>
+          <p style="color:var(--text-mid); margin-bottom:14px; line-height:1.8;">
+            <strong style="color:var(--dsm-primary);">DSM-5-TR日本語版（2023年）</strong>では、ICD-11の日本語訳との整合性を図るため、原則として<strong>「症」に統一</strong>されました。
+          </p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div style="background:var(--bg); border-radius:6px; padding:12px;">
+              <div style="font-size:11px; font-weight:700; color:var(--text-light); margin-bottom:8px;">DSM-5 日本語版（旧）</div>
+              <div style="font-size:12px; color:var(--text-mid); line-height:2;">
+                自閉スペクトラム症／自閉症スペクトラム<strong>障害</strong><br>
+                注意欠如・多動性<strong>障害</strong>（ADHD）<br>
+                学習<strong>障害</strong>（LD）<br>
+                発達性協調運動<strong>障害</strong><br>
+                双極性<strong>障害</strong>および関連<strong>障害</strong>
+              </div>
+            </div>
+            <div style="background:var(--dsm-light); border-radius:6px; padding:12px; border:1px solid var(--dsm-mid);">
+              <div style="font-size:11px; font-weight:700; color:var(--dsm-primary); margin-bottom:8px;">DSM-5-TR 日本語版（新）</div>
+              <div style="font-size:12px; color:var(--dsm-primary); line-height:2;">
+                自閉スペクトラム<strong>症</strong>（ASD）<br>
+                注意欠如多動<strong>症</strong>（ADHD）<br>
+                限局性学習<strong>症</strong>（SLD）<br>
+                発達性協調運動<strong>症</strong>（DCD）<br>
+                双極<strong>症</strong>および関連<strong>症</strong>群
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px; background:#EFF6FF; border-radius:6px; padding:10px 14px; font-size:13px; color:var(--text-mid); line-height:1.7;">
+            <strong style="color:var(--dsm-primary);">「症」に統一した理由：</strong>①「障害」はdisabilityの訳語と混同されやすい、②「障害」という表現が不可逆的な状態との誤解を招く、③患者・家族への説明でネガティブな印象を与えやすい、④ICD-11日本語訳との整合性——という4つの理由からです。また「精神病（psychosis）」も<strong>「精神症」</strong>に改められました。
+          </div>
+        </div>
+
+        <div class="important-note" style="margin-top:14px; background:#EFF6FF; border-color:var(--dsm-mid); color:#1e40af;">
+          <i class="fa-solid fa-circle-info" style="margin-top:2px;"></i>
+          <div><strong>現場で覚えておきたいポイント：</strong>英語の診断基準は同一ですが、<strong>日本語の病名そのものが変わっています</strong>。支援記録や引き継ぎ書類では「注意欠如・多動性障害」と「注意欠如多動症」が混在します。どちらも同じADHDを指していることを知っておきましょう。</div>
+        </div>
+
+        <hr class="content-hr">
+
+        <h4 style="margin:0 0 14px; font-size:14px; color:var(--text-mid); font-weight:700; letter-spacing:0.05em;">
+          <i class="fa-solid fa-arrows-rotate" style="margin-right:8px; color:#B45309;"></i>「発達障害」→「神経発達症」：就労移行支援で特に重要な名称変更
+        </h4>
+
+        <div style="background:#FFFBEB; border:2px solid #F59E0B; border-radius:12px; padding:20px;">
+
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:center; margin-bottom:16px;">
+            <div style="background:#fff; border-radius:10px; padding:14px; border:1px solid #FDE68A; text-align:center;">
+              <div style="font-size:11px; font-weight:700; color:#92400E; margin-bottom:6px;">DSM-5 日本語版（2014）<br>ICD-10 時代</div>
+              <div style="font-size:15px; color:#78350F; font-weight:700; line-height:1.6;">発達<strong>障害</strong><br><span style="font-size:12px; font-weight:400;">神経発達障害（仮訳）</span></div>
+            </div>
+            <div style="color:#94A3B8; font-size:20px; text-align:center;">→</div>
+            <div style="background:#ECFDF5; border-radius:10px; padding:14px; border:2px solid #6EE7B7; text-align:center;">
+              <div style="font-size:11px; font-weight:700; color:#065F46; margin-bottom:6px;">DSM-5-TR（2023）<br>ICD-11 時代</div>
+              <div style="font-size:15px; color:#065F46; font-weight:700; line-height:1.6;">神経発達<strong>症</strong>（群）<br><span style="font-size:12px; font-weight:400;">Neurodevelopmental Disorders</span></div>
+            </div>
+          </div>
+
+          <div style="background:#fff; border-radius:8px; padding:14px; margin-bottom:12px; font-size:13px;">
+            <div style="font-weight:700; color:var(--text-dark); margin-bottom:10px;">「神経発達症群」に含まれる主な診断（DSM-5-TR・ICD-11で共通）</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; color:var(--text-mid); line-height:1.9;">
+              <div>▸ 自閉スペクトラム症（ASD）</div>
+              <div>▸ 注意欠如多動症（ADHD）</div>
+              <div>▸ 限局性学習症（SLD）</div>
+              <div>▸ 知的発達症（旧：知的障害）</div>
+              <div>▸ 発達性協調運動症（DCD）</div>
+              <div>▸ チック症群、吃音症 など</div>
+            </div>
+          </div>
+
+          <div style="background:#FEF9C3; border-radius:8px; padding:14px; border-left:4px solid #F59E0B; font-size:13px;">
+            <div style="font-weight:700; color:#92400E; margin-bottom:10px;"><i class="fa-solid fa-scale-balanced" style="margin-right:6px;"></i>「神経発達症」と「発達障害」は現在も<strong>場面によって使い分けられている</strong></div>
+            <div style="display:flex; flex-direction:column; gap:8px; color:#78350F; line-height:1.7;">
+              <div style="display:flex; gap:10px; align-items:flex-start;">
+                <span style="background:#065F46; color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; flex-shrink:0; margin-top:2px;">医療・診断書</span>
+                <span>「神経発達症（群）」を使用（DSM-5-TR・ICD-11準拠）</span>
+              </div>
+              <div style="display:flex; gap:10px; align-items:flex-start;">
+                <span style="background:#B45309; color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; flex-shrink:0; margin-top:2px;">行政・法律・福祉</span>
+                <span>「発達障害」を使用（<strong>発達障害者支援法</strong>等の法令は改正されておらず、当面このまま）</span>
+              </div>
+              <div style="display:flex; gap:10px; align-items:flex-start;">
+                <span style="background:#475569; color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; flex-shrink:0; margin-top:2px;">一般・教育現場</span>
+                <span>「発達障害」が依然として主流</span>
+              </div>
+            </div>
+            <div style="margin-top:12px; padding-top:10px; border-top:1px dashed #FDE68A; font-size:12px; color:#92400E; line-height:1.7;">
+              <strong>現場での実態（精神科医の証言）：</strong>医師は診察ではDSM-5の診断名（神経発達症）を使いながら、診断書にはICD-10コード（Fコード）を記載するという二重運用が日常的に行われています。利用者から「発達障害と神経発達症、どっちが正しいの？」と聞かれた際は、「どちらも同じことを指す言葉で、使われる場面が違うだけ」と説明できましょう。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="divider-icon"><i class="fa-solid fa-arrows-down-to-line"></i></div></div>
+
+  <!-- ─── SECTION 5: 比較 ─── -->
+  <div class="section-block">
+    <div class="section-label">
+      <div class="section-num">5</div>
+      <div class="section-tag">比較・対照</div>
+    </div>
+    <h2 class="section-title">DSM と ICD を<br>並べて比較する</h2>
+    <p class="section-desc">2つの体系の本質的な違いを、7つの軸で整理します。</p>
+
+    <div class="compare-wrapper">
+      <div class="compare-header">
+        <div class="ch-label">比較の軸</div>
+        <div class="ch-dsm"><i class="fa-solid fa-book" style="margin-right: 6px;"></i>DSM-5(-TR)</div>
+        <div class="ch-icd"><i class="fa-solid fa-earth-asia" style="margin-right: 6px;"></i>ICD-10/11</div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-label"><i class="fa-solid fa-building-columns" style="margin-right: 8px; color: var(--text-light);"></i>発行機関</div>
+        <div class="cr-dsm">米国精神医学会<br><span style="font-size: 11px; font-weight: 400;">（APA）</span></div>
+        <div class="cr-icd">世界保健機関<br><span style="font-size: 11px; font-weight: 400;">（WHO）</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-label"><i class="fa-solid fa-crosshairs" style="margin-right: 8px; color: var(--text-light);"></i>対象範囲</div>
+        <div class="cr-dsm">精神障害のみ<br><span style="font-size: 11px; font-weight: 400;">（約300疾患）</span></div>
+        <div class="cr-icd">全疾患・健康状態<br><span style="font-size: 11px; font-weight: 400;">（55,000以上のコード）</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-label"><i class="fa-solid fa-bullseye" style="margin-right: 8px; color: var(--text-light);"></i>主な目的</div>
+        <div class="cr-dsm">臨床診断・研究</div>
+        <div class="cr-icd">統計・行政・臨床</div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-label"><i class="fa-solid fa-list-check" style="margin-right: 8px; color: var(--text-light);"></i>基準の性格</div>
+        <div class="cr-dsm">厳密な操作的基準<br><span style="font-size: 11px; font-weight: 400;">（症状数・期間を規定）</span></div>
+        <div class="cr-icd">柔軟な臨床ガイドライン<br><span style="font-size: 11px; font-weight: 400;">（臨床的判断を重視）</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-label"><i class="fa-solid fa-globe" style="margin-right: 8px; color: var(--text-light);"></i>地理的使用</div>
+        <div class="cr-dsm">北米主導・研究で世界標準</div>
+        <div class="cr-icd">194ヵ国・日本の医療標準</div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-label"><i class="fa-solid fa-file-invoice-dollar" style="margin-right: 8px; color: var(--text-light);"></i>保険・行政</div>
+        <div class="cr-dsm" style="color: #94A3B8; font-weight: 400; font-size: 13px;">日本では直接使用されない</div>
+        <div class="cr-icd"><i class="fa-solid fa-check" style="color: var(--icd-primary);"></i> 日本の保険・行政の根拠</div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-label"><i class="fa-solid fa-rotate" style="margin-right: 8px; color: var(--text-light);"></i>主な改訂</div>
+        <div class="cr-dsm">DSM-III（1980）<br>DSM-5（2013）<br>DSM-5-TR（2022）</div>
+        <div class="cr-icd">ICD-10（1992）<br>ICD-11（2019採択、2022発効）<br>日本：移行中</div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-label"><i class="fa-solid fa-language" style="margin-right: 8px; color: var(--text-light);"></i>言語・文化</div>
+        <div class="cr-dsm">英語が一次文書<br><span style="font-size: 11px; font-weight: 400;">西洋中心の批判あり</span></div>
+        <div class="cr-icd">多言語・多文化への配慮<br><span style="font-size: 11px; font-weight: 400;">（ただし限界あり）</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-label"><i class="fa-solid fa-arrows-left-right-to-line" style="margin-right: 8px; color: var(--text-light);"></i>関係性</div>
+        <div class="cr-dsm" style="grid-column: 2 / 4; color: var(--text-mid); font-size: 13px; font-weight: 400; text-align: center; width: 100%; justify-content: center; padding: 16px 20px;">
+          互いに参照しながら改訂されており、<strong>ICD-11とDSM-5は相互の整合性を高めることを明示的に目指した</strong>。しかし完全には一致しない。
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 14px; color: var(--text-dark);">「精神障害の章」だけで見るとどうなるか</h4>
+      <div class="dimension-chart">
+        <div class="dim-title">精神障害の分類における比較（相対的なイメージ）</div>
+        <div class="dim-bar-group">
+          <div class="dim-label"><span>基準の厳密さ（操作的）</span></div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+            <span style="width: 36px; font-size: 12px; font-weight: 700; color: var(--dsm-primary);">DSM</span>
+            <div class="dim-bar-bg" style="flex: 1;"><div class="dim-bar-fill dsm" style="width: 92%;"></div></div>
+            <span style="font-size: 12px; color: var(--text-light); width: 30px;">高い</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 36px; font-size: 12px; font-weight: 700; color: var(--icd-primary);">ICD</span>
+            <div class="dim-bar-bg" style="flex: 1;"><div class="dim-bar-fill icd" style="width: 55%;"></div></div>
+            <span style="font-size: 12px; color: var(--text-light); width: 30px;">中程度</span>
+          </div>
+        </div>
+        <div class="dim-bar-group">
+          <div class="dim-label"><span>世界的な普及度（使用国数）</span></div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+            <span style="width: 36px; font-size: 12px; font-weight: 700; color: var(--dsm-primary);">DSM</span>
+            <div class="dim-bar-bg" style="flex: 1;"><div class="dim-bar-fill dsm" style="width: 45%;"></div></div>
+            <span style="font-size: 12px; color: var(--text-light); width: 30px;">中程度</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 36px; font-size: 12px; font-weight: 700; color: var(--icd-primary);">ICD</span>
+            <div class="dim-bar-bg" style="flex: 1;"><div class="dim-bar-fill icd" style="width: 98%;"></div></div>
+            <span style="font-size: 12px; color: var(--text-light); width: 30px;">非常に高い</span>
+          </div>
+        </div>
+        <div class="dim-bar-group">
+          <div class="dim-label"><span>研究・学術領域での使用頻度</span></div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+            <span style="width: 36px; font-size: 12px; font-weight: 700; color: var(--dsm-primary);">DSM</span>
+            <div class="dim-bar-bg" style="flex: 1;"><div class="dim-bar-fill dsm" style="width: 85%;"></div></div>
+            <span style="font-size: 12px; color: var(--text-light); width: 30px;">高い</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 36px; font-size: 12px; font-weight: 700; color: var(--icd-primary);">ICD</span>
+            <div class="dim-bar-bg" style="flex: 1;"><div class="dim-bar-fill icd" style="width: 65%;"></div></div>
+            <span style="font-size: 12px; color: var(--text-light); width: 30px;">高い</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="divider-icon"><i class="fa-solid fa-arrows-down-to-line"></i></div></div>
+
+  <!-- ─── SECTION 6: ケーススタディ ─── -->
+  <div class="section-block">
+    <div class="section-label">
+      <div class="section-num">6</div>
+      <div class="section-tag">実例で読む</div>
+    </div>
+    <h2 class="section-title">ASDを例に：<br>DSMとICDでどう違うか</h2>
+    <p class="section-desc">同じ「自閉スペクトラム症（ASD）」について、DSM-5とICD-11がそれぞれどのように定義しているかを見てみましょう。</p>
+
+    <div class="case-tabs">
+      <button class="case-tab dsm-tab active" onclick="switchTab('dsm')">
+        <i class="fa-solid fa-book"></i> DSM-5 の定義
+      </button>
+      <button class="case-tab icd-tab" onclick="switchTab('icd')">
+        <i class="fa-solid fa-earth-asia"></i> ICD-11 の定義
+      </button>
+    </div>
+
+    <div class="case-content active" id="tab-dsm">
+      <div style="font-size: 13px; color: var(--dsm-primary); font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <span class="pill pill-dsm">DSM-5</span> 自閉スペクトラム症 / Autism Spectrum Disorder（299.00）
+      </div>
+      <div class="criteria-group">
+        <div class="criteria-group-title" style="color: var(--dsm-primary);"><i class="fa-solid fa-check-double"></i>A基準（3項目すべて必須）：社会的コミュニケーションの持続的な欠陥</div>
+        <ul class="criteria-list">
+          <li>A1：社会的・情緒的相互性の欠陥（異常な社会的接近、通常の会話の往復ができないなど）</li>
+          <li>A2：非言語的コミュニケーション行動の欠陥（視線と身振りの統合不全、表情の乏しさなど）</li>
+          <li>A3：関係性の発展・維持・理解の欠陥（想像的遊びを共有することの困難など）</li>
+        </ul>
+      </div>
+      <div class="criteria-group">
+        <div class="criteria-group-title" style="color: var(--dsm-primary);"><i class="fa-solid fa-check"></i>B基準（4項目中2項目以上必須）：限定された反復する行動</div>
+        <ul class="criteria-list">
+          <li>B1：常同的または反復的な運動動作・物体の使用・会話（単純な反復動作、オウム返しなど）</li>
+          <li>B2：同一性への固執、ルーティンへの頑固なこだわり（変化への極度の苦痛など）</li>
+          <li>B3：きわめて限定された固執した興味（対象の強度や対象において異常な程度）</li>
+          <li>B4：感覚刺激に対する過敏さまたは鈍感さ（痛みへの無関心、特定の音・光への過剰反応）</li>
+        </ul>
+      </div>
+      <div class="criteria-group">
+        <div class="criteria-group-title"><i class="fa-solid fa-info-circle"></i>C・D・E基準（すべて必須）</div>
+        <ul class="criteria-list">
+          <li>C：症状は発達早期から存在（社会的要求が能力の限界を超えるまで顕在化しないことがある）</li>
+          <li>D：症状が社会・職業的機能を著しく障害している</li>
+          <li>E：知的能力障害や全般的発達遅延では説明できない</li>
+        </ul>
+      </div>
+      <div class="important-note">
+        <i class="fa-solid fa-tag" style="margin-top: 2px;"></i>
+        <div>重症度のSpecifierとして「レベル1〜3」（支援の必要度）、知的機能の障害の有無、言語の障害の有無などを付記する。</div>
+      </div>
+    </div>
+
+    <div class="case-content" id="tab-icd">
+      <div style="font-size: 13px; color: var(--icd-primary); font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <span class="pill pill-icd">ICD-11</span> 自閉スペクトラム症 / Autism Spectrum Disorder（6A02）
+      </div>
+      <div class="criteria-group" style="border-color: var(--icd-mid); background: var(--icd-light);">
+        <div class="criteria-group-title" style="color: var(--icd-primary);"><i class="fa-solid fa-check-double"></i>必須特徴1：社会的コミュニケーションと相互作用の持続的な欠陥</div>
+        <ul class="criteria-list">
+          <li>社会的・情緒的相互関係の欠陥（社会的接近や通常の会話の困難など）</li>
+          <li>非言語的コミュニケーション行動の欠陥</li>
+          <li>関係性の発展・維持・理解の欠陥</li>
+          <li>※ ICD-11ではDSM-5と類似した内容だが、「ガイドライン」として柔軟な適用を想定</li>
+        </ul>
+      </div>
+      <div class="criteria-group" style="border-color: var(--icd-mid); background: var(--icd-light);">
+        <div class="criteria-group-title" style="color: var(--icd-primary);"><i class="fa-solid fa-check"></i>必須特徴2：限定された反復する行動・興味・活動</div>
+        <ul class="criteria-list">
+          <li>常同的または反復的な行動・発語（DSM-5のB1に相当）</li>
+          <li>同一性への固執・変化への抵抗（DSM-5のB2に相当）</li>
+          <li>高度に限局した固執した興味（DSM-5のB3に相当）</li>
+          <li>感覚過敏・鈍麻（DSM-5のB4に相当）</li>
+        </ul>
+      </div>
+      <div class="criteria-group" style="border-color: var(--icd-mid);">
+        <div class="criteria-group-title"><i class="fa-solid fa-info-circle"></i>ICD-11ならではの追加的な分類軸</div>
+        <ul class="criteria-list">
+          <li>知的発達障害の有無、機能的言語能力の有無を別軸で評価（DSM-5のSpecifierに類似）</li>
+          <li>「カモフラージュ・マスキング」（症状を意図的/無意識に隠すこと）についての臨床的注意喚起</li>
+          <li>ICD-10の「アスペルガー症候群（F84.5）」「特定不能の広汎性発達障害（F84.9）」を統合</li>
+        </ul>
+      </div>
+      <div class="important-note" style="background: var(--icd-light); border-color: var(--icd-mid); color: var(--icd-primary);">
+        <i class="fa-solid fa-circle-info" style="margin-top: 2px; color: var(--icd-primary);"></i>
+        <div>ICD-11はDSM-5との整合性を高めることを明示的に目指したため、ASDの定義は非常に近くなった。ただし、ICDは世界中の医療水準・資源の多様性を考慮した「臨床ガイドライン」として設計されており、DSMほど厳密な「何項目中何項目」という計数的適用を必須としない。</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">ICD-10から見ると：アスペルガー症候群の扱いの変化</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; text-align: center;">
+        <div style="background: var(--bg); border-radius: 10px; padding: 16px; font-size: 13px;">
+          <div style="font-weight: 700; color: var(--icd-primary); margin-bottom: 6px;">ICD-10</div>
+          <div style="color: var(--text-mid);">F84.5<br><strong>アスペルガー症候群</strong><br><span style="font-size: 11px;">別診断として存在</span></div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; color: var(--text-light);">
+          <i class="fa-solid fa-arrow-right fa-lg"></i>
+        </div>
+        <div style="background: var(--bg); border-radius: 10px; padding: 16px; font-size: 13px;">
+          <div style="font-weight: 700; color: var(--icd-primary); margin-bottom: 6px;">ICD-11 / DSM-5</div>
+          <div style="color: var(--text-mid);">6A02 / 299.00<br><strong>自閉スペクトラム症</strong><br><span style="font-size: 11px;">に統合・一本化</span></div>
+        </div>
+      </div>
+      <div class="highlight-strip" style="margin-top: 14px;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>ICD-10で「F84.5アスペルガー症候群」と診断されていた利用者は、ICD-11・DSM-5の基準では「自閉スペクトラム症」と表現されます。診断名が変わっても、その人の特性・必要な支援は変わりません。スタッフはこの変化に対して利用者に丁寧に説明できる準備が必要です。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="divider-icon"><i class="fa-solid fa-arrows-down-to-line"></i></div></div>
+
+  <!-- ─── SECTION 7: 現場への意味 ─── -->
+  <div class="section-block">
+    <div class="section-label">
+      <div class="section-num">7</div>
+      <div class="section-tag">実践的含意</div>
+    </div>
+    <h2 class="section-title">就労移行支援スタッフへの<br>実践的な意味</h2>
+    <p class="section-desc">DSM・ICDの知識を支援の現場でどのように活かすべきか——4つの観点から整理します。</p>
+
+    <div class="card card-neutral">
+      <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-file-alt" style="color: var(--accent);"></i>① 書類に出てくるコードを読む
+      </h4>
+      <p style="font-size: 14px; color: var(--text-mid); line-height: 1.8; margin-top: 10px;">
+        支援計画や引き継ぎ書類に記載されたコードは、まず<strong>ICD（Fコード、またはICD-11のアルファベット＋数字）</strong>か<strong>DSM（数字3桁.数字）</strong>かを識別しましょう。
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+        <div style="background: var(--dsm-light); border-radius: 8px; padding: 14px; font-size: 13px;">
+          <div style="font-weight: 700; color: var(--dsm-primary); margin-bottom: 8px;"><i class="fa-solid fa-book"></i> DSMコードの例</div>
+          <div style="color: var(--text-mid); line-height: 1.7;">
+            <code style="background: #DBEAFE; padding: 2px 6px; border-radius: 3px; font-size: 12px;">296.xx</code> → うつ病エピソード<br>
+            <code style="background: #DBEAFE; padding: 2px 6px; border-radius: 3px; font-size: 12px;">314.01</code> → ADHD（混合）<br>
+            <code style="background: #DBEAFE; padding: 2px 6px; border-radius: 3px; font-size: 12px;">299.00</code> → ASD
+          </div>
+        </div>
+        <div style="background: var(--icd-light); border-radius: 8px; padding: 14px; font-size: 13px;">
+          <div style="font-weight: 700; color: var(--icd-primary); margin-bottom: 8px;"><i class="fa-solid fa-earth-asia"></i> ICDコードの例</div>
+          <div style="color: var(--text-mid); line-height: 1.7;">
+            <code style="background: #D1FAE5; padding: 2px 6px; border-radius: 3px; font-size: 12px;">F32</code> → うつ病エピソード<br>
+            <code style="background: #D1FAE5; padding: 2px 6px; border-radius: 3px; font-size: 12px;">F90</code> → 多動性障害（ADHD）<br>
+            <code style="background: #D1FAE5; padding: 2px 6px; border-radius: 3px; font-size: 12px;">F84.0</code> → 小児自閉症
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-scale-unbalanced" style="color: var(--text-mid);"></i>② 「診断名 ≠ 機能レベル」を常に意識する
+      </h4>
+      <p style="font-size: 14px; color: var(--text-mid); line-height: 1.8; margin-bottom: 14px;">
+        DSM・ICD の診断は「どんな症状・困難のパターンを持つか」を記述します。しかし、<strong>就労・日常生活においてどのような機能を持ち、何の支援が必要かは診断名から直接わかりません</strong>。
+      </p>
+      <div class="icf-note">
+        <div class="icf-note-title">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>ICF（国際生活機能分類）との連携が不可欠
+        </div>
+        <p>
+          WHO が提供する<strong>ICF（International Classification of Functioning, Disability and Health）</strong>は、ICDと同じWHOが作成する別の体系です。ICDが「病気・障害の診断（何を持っているか）」を分類するのに対し、ICFは<strong>「生活機能・参加・環境因子（何ができるか・何を必要とするか）」</strong>を分類します。就労移行支援において重要なのは、診断名よりもICFの視点で利用者を見ることです。
+        </p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-layer-group" style="color: var(--text-mid);"></i>③ 複数診断（コモビディティ）は例外ではなく「常態」
+      </h4>
+      <p style="font-size: 14px; color: var(--text-mid); line-height: 1.8;">
+        DSMの研究では、精神障害を持つ人の多くが複数の診断基準を同時に満たします（共存症・コモビディティ）。例：ASD＋ADHD、うつ病＋不安症、など。これはカテゴリ分類の限界を示しており、<strong>スタッフは「診断が1つあれば説明は完結する」という見方を避ける</strong>必要があります。複数の診断を持つ利用者の支援では、どの困難がどの特性から来ているかを個別に理解することが重要です。
+      </p>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-comments" style="color: var(--text-mid);"></i>④ 利用者への診断名の伝え方
+      </h4>
+      <p style="font-size: 14px; color: var(--text-mid); line-height: 1.8; margin-bottom: 10px;">
+        利用者が「私はICD-10でF84.0です」「DSM-5でASDです」と言う場面があります。支援者として注意したいこと：
+      </p>
+      <ul style="list-style: none; padding: 0;">
+        <li style="font-size: 14px; color: var(--text-mid); padding: 8px 0; padding-left: 24px; position: relative; border-bottom: 1px dashed var(--border); line-height: 1.7;">
+          <i class="fa-solid fa-check" style="position: absolute; left: 0; color: var(--icd-primary); top: 10px;"></i>
+          <strong>診断名はアイデンティティではない</strong>——「ASDの人」ではなく「ASDの診断を持つAさん」という視点を維持する
+        </li>
+        <li style="font-size: 14px; color: var(--text-mid); padding: 8px 0; padding-left: 24px; position: relative; border-bottom: 1px dashed var(--border); line-height: 1.7;">
+          <i class="fa-solid fa-check" style="position: absolute; left: 0; color: var(--icd-primary); top: 10px;"></i>
+          <strong>診断名が変わっても（ICD-10→ICD-11）</strong>、その人の特性・経験・必要な支援は変わらない
+        </li>
+        <li style="font-size: 14px; color: var(--text-mid); padding: 8px 0; padding-left: 24px; position: relative; line-height: 1.7;">
+          <i class="fa-solid fa-check" style="position: absolute; left: 0; color: var(--icd-primary); top: 10px;"></i>
+          就労移行支援の利用には何らかの診断・障害福祉サービス受給者証が前提となる。ただし<strong>同じ診断名でも症状・困難の現れ方は一人ひとり異なる</strong>ため、診断名だけで支援内容を決めず、個別のアセスメントを重視する
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="divider-icon"><i class="fa-solid fa-arrows-down-to-line"></i></div></div>
+
+  <!-- ─── SECTION 8: 批判的視点 ─── -->
+  <div class="section-block">
+    <div class="section-label">
+      <div class="section-num">8</div>
+      <div class="section-tag">批判的視点</div>
+    </div>
+    <h2 class="section-title">診断分類体系の<br>限界と批判</h2>
+    <p class="section-desc">DSM・ICDは現代医学の重要な基盤ですが、同時に多くの学術的・倫理的批判を受けています。支援者はこれを知った上で診断情報と向き合う必要があります。</p>
+
+    <div class="accordion-item open">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div class="accordion-header-left">
+          <div class="accordion-icon critical"><i class="fa-solid fa-diagram-project"></i></div>
+          <div>
+            <div class="accordion-title">カテゴリ分類 vs スペクトラム（次元）問題</div>
+            <div class="accordion-sub">最も根本的な問い：精神症状に「境界線」は存在するのか</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+      </div>
+      <div class="accordion-body" style="display: block;">
+        <p>DSM・ICDはいずれも「あなたはXXである/でない」という<strong>カテゴリ（範疇）的な診断</strong>を基本とします。しかし、研究は一貫して「精神症状は連続的（スペクトラム）に分布する」ことを示しています。</p>
+        <p>例えば、うつ病の診断基準を「5症状以上・2週間以上」と設定した場合、4症状・13日間の人は「うつ病ではない」と判断されます。しかし、その人と「うつ病」と診断された人の違いが本質的かどうかは不明です。</p>
+        <p>この問題に対し、<strong>DSM-5とICD-11はともにディメンション（次元）的評価を導入しようとしましたが、臨床実用性・保険・統計との整合性の問題から、カテゴリ分類を完全に捨てることができていません</strong>。</p>
+        <p>就労移行支援の文脈では、「診断がある/ない」という境界よりも、「この人に今どのような困難があり、どのような支援が有効か」というスペクトラム的な視点が実用的です。</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div class="accordion-header-left">
+          <div class="accordion-icon warning"><i class="fa-solid fa-globe"></i></div>
+          <div>
+            <div class="accordion-title">文化的バイアスの問題</div>
+            <div class="accordion-sub">特にDSMが受ける批判：西洋中心の精神医学</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+      </div>
+      <div class="accordion-body">
+        <p>DSMは主に北米・西欧の臨床経験と研究に基づいて開発されました。批判されている点として：</p>
+        <p><strong>「対人恐怖症」</strong>（日本独自の概念：自分が他者を不快にさせることへの恐れ）はDSM-5で「Taijin kyofusho」として言及されていますが、Western型の「社交不安症」とは質的に異なる特徴があります。</p>
+        <p>また、<strong>うつ病の症状表現</strong>は文化によって異なります（身体症状として表現する傾向が一部の文化で強い等）。DSMの基準をそのまま非西洋社会に適用することへの批判は学術界で継続しています。</p>
+        <p>WHOのICDはより多文化的な配慮を意図して設計されていますが、研究エビデンスの多くが特定の地域に偏っているという根本的な限界は解消できていません。</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div class="accordion-header-left">
+          <div class="accordion-icon critical"><i class="fa-solid fa-chart-line"></i></div>
+          <div>
+            <div class="accordion-title">信頼性と妥当性の乖離</div>
+            <div class="accordion-sub">「同じ診断がつく」ことと「同じ病態である」ことは別</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+      </div>
+      <div class="accordion-body">
+        <p>DSM-IIIから操作的診断基準を導入したことで、<strong>信頼性（異なる医師が同じ診断をつける再現性）は大きく向上</strong>しました。これは明確な進歩です。</p>
+        <p>しかし、<strong>妥当性（診断カテゴリが本当に独立した疾患実体を反映しているか）</strong>は依然として問題です。例えば：</p>
+        <p>・「うつ病」と「不安症」は50〜60%以上が共存する → 本当に別の疾患か？<br>
+        ・ASDとADHDの共存率は非常に高い → 診断境界は人工的なものか？<br>
+        ・同じ「ASD」の診断を持つ人でも、その神経学的プロフィールは非常に多様</p>
+        <p>NIMH（米国国立精神衛生研究所）は2010年に「RDoC（Research Domain Criteria）」を開始。DSM/ICDのカテゴリではなく、神経科学的なディメンション（感情・認知・社会的処理など）に基づいて研究を再編しようとしています。これはDSM/ICDカテゴリの妥当性への根本的な問いかけです。</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div class="accordion-header-left">
+          <div class="accordion-icon warning"><i class="fa-solid fa-pills"></i></div>
+          <div>
+            <div class="accordion-title">医薬品産業との関係</div>
+            <div class="accordion-sub">診断カテゴリの拡大と製薬への影響</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+      </div>
+      <div class="accordion-body">
+        <p>DSMの改訂に際して、新しい診断カテゴリを作成・拡大することが製薬会社の薬剤開発・マーケティングと連動するという批判があります（Allen Frances, DSM-IV座長による自己批判的な著書『Saving Normal』2013年など）。</p>
+        <p>DSM-5での論争的な変更点として：<strong>喪失後の悲嘆（bereavement exclusion）の撤廃</strong>（2週間以上悲嘆が続けばうつ病と診断できるように）、<strong>子どものADHD診断年齢基準の引き上げ</strong>、<strong>軽度神経認知障害の追加</strong>などが「診断の過度な拡大」として批判されました。</p>
+        <p>ただし、製薬との関係は医学全体の構造的問題であり、DSMだけの問題ではありません。また、診断基準の拡大が「過小診断」を解消するという主張もあります。</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div class="accordion-header-left">
+          <div class="accordion-icon info"><i class="fa-solid fa-person-rays"></i></div>
+          <div>
+            <div class="accordion-title">障害の社会モデルと診断分類</div>
+            <div class="accordion-sub">診断は「個人の問題」の所在を示してしまうのか</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+      </div>
+      <div class="accordion-body">
+        <p>DSM・ICDは「障害は個人の中にある」という<strong>医学モデル</strong>的な発想に基づいています。診断名を与えることで、「問題の所在は本人にある」というメッセージを暗黙に送ってしまうリスクがあります。</p>
+        <p>対して<strong>障害の社会モデル</strong>（障害者運動から生まれた視点）は、「障害は個人の特性と社会的バリアの相互作用から生じる」と考えます。例えばASDの人が職場で困難を経験するのは「ASDだから」ではなく「ASDの特性に対応できない職場環境だから」という視点です。</p>
+        <p>就労移行支援は本質的に「個人の変化」だけを求める立場をとらず、「環境調整・合理的配慮」も支援の柱としています。診断名は利用者の困難を理解する手がかりとして使いますが、「その人をその診断名で説明しきる」ことの危険性を常に意識することが重要です。</p>
+        <p>ICFはこの点でより中立的です——「心身機能・構造」（医学モデル的視点）と「活動・参加」「環境因子」「個人因子」（社会モデル的視点）を統合しています。</p>
+      </div>
+    </div>
+
+    <div class="key-principle">
+      <p>
+        診断分類体系は「完成した科学的真実」ではなく、<strong>「現時点での私たちの理解の最善の近似」</strong>です。
+        DSM・ICDを使うことと、その限界を知ることは矛盾しません——むしろ、限界を知った上で使いこなすことが、支援者の専門性の一部です。
+      </p>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="divider-icon"><i class="fa-solid fa-arrows-down-to-line"></i></div></div>
+
+  <!-- ─── SECTION 9: まとめ ─── -->
+  <div class="section-block">
+    <div class="section-label">
+      <div class="section-num">9</div>
+      <div class="section-tag">まとめ</div>
+    </div>
+    <h2 class="section-title">診断名を「正しく読む」ために</h2>
+    <p class="section-desc">この図解で学んだことを5つの「覚えておきたいこと」に凝縮します。</p>
+
+    <div class="summary-grid">
+      <div class="summary-card dsm-card">
+        <div class="sc-title"><i class="fa-solid fa-book" style="margin-right: 8px;"></i>DSMとは</div>
+        <ul>
+          <li>米国精神医学会（APA）発行</li>
+          <li>精神障害のみを対象</li>
+          <li>厳密な操作的診断基準</li>
+          <li>研究・臨床で世界的影響力</li>
+          <li>日本では心理・研究文脈で多用</li>
+          <li>現行：DSM-5-TR（2022）</li>
+        </ul>
+      </div>
+      <div class="summary-card icd-card">
+        <div class="sc-title"><i class="fa-solid fa-earth-asia" style="margin-right: 8px;"></i>ICDとは</div>
+        <ul>
+          <li>WHO発行・193ヵ国が使用</li>
+          <li>全疾患をカバー（精神障害は一章）</li>
+          <li>柔軟な臨床ガイドライン形式</li>
+          <li>日本の医療・保険・行政の根拠</li>
+          <li>ICD-10が現在の主流（11移行中）</li>
+          <li>精神障害：F00〜F99（ICD-10）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h4 style="font-weight: 700; font-size: 15px; margin-bottom: 16px; color: var(--text-dark);">スタッフとして覚えておきたい5つのこと</h4>
+      <div class="step-flow">
+        <div class="step-item">
+          <div class="step-num-wrap">
+            <div class="step-num both">1</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-label">日本の医療書類はICDコードを使う（主にICD-10）</div>
+            <div class="step-desc">「Fコード」はICD由来。保険・行政・診断書のすべてでICDが使われています。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num-wrap">
+            <div class="step-num both">2</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-label">心理・研究文脈ではDSMが使われることが多い</div>
+            <div class="step-desc">心理士のアセスメント報告書、海外研究文献ではDSM基準が用いられることが多いです。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num-wrap">
+            <div class="step-num both">3</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-label">診断名は機能レベルを教えてくれない</div>
+            <div class="step-desc">就労支援で重要なのはICFの視点（何ができて何を必要とするか）。診断名だけで支援計画は立てられません。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num-wrap">
+            <div class="step-num both">4</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-label">ICD-10→ICD-11の移行で診断名が変わる</div>
+            <div class="step-desc">「アスペルガー症候群」→「自閉スペクトラム症」など。名前が変わっても特性・支援は変わりません。利用者への説明が必要な場合があります。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num-wrap">
+            <div class="step-num both">5</div>
+          </div>
+          <div class="step-content">
+            <div class="step-label">診断体系には限界がある——批判的に使う</div>
+            <div class="step-desc">カテゴリ分類・文化的バイアス・高い共存率は体系の限界です。診断名は「人を理解するための一つの手がかり」であって、「その人のすべてを説明するもの」ではありません。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ─── SOURCES ─── -->
+<div class="sources-section">
+  <div class="container">
+    <div class="sources-title">
+      <i class="fa-solid fa-book-open"></i> 情報ソース・参考文献
+    </div>
+    <p style="font-size: 13px; margin-bottom: 20px; color: #64748B;">この図解の作成にあたり、以下の一次資料・学術文献・政府資料を参照しています。</p>
+
+    <div class="source-item">
+      <div class="source-num">1</div>
+      <div>
+        <strong style="color: #E2E8F0;">American Psychiatric Association (2022). DSM-5-TR: Diagnostic and Statistical Manual of Mental Disorders, 5th Edition, Text Revision.</strong>
+        Washington DC: APA.<br>
+        <a href="https://www.psychiatry.org/psychiatrists/practice/dsm" target="_blank">https://www.psychiatry.org/psychiatrists/practice/dsm</a>
+      </div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-num">2</div>
+      <div>
+        <strong style="color: #E2E8F0;">World Health Organization (2019). ICD-11: International Classification of Diseases 11th Revision.</strong>
+        Geneva: WHO.<br>
+        <a href="https://icd.who.int/en" target="_blank">https://icd.who.int/en</a>
+      </div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-num">3</div>
+      <div>
+        <strong style="color: #E2E8F0;">World Health Organization (1992). ICD-10: The ICD-10 Classification of Mental and Behavioural Disorders.</strong>
+        Geneva: WHO.<br>
+        <a href="https://www.who.int/publications/i/item/9241544228" target="_blank">https://www.who.int/publications/i/item/9241544228</a>
+      </div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-num">4</div>
+      <div>
+        <strong style="color: #E2E8F0;">厚生労働省「疾病、傷害及び死因の統計分類」ICD-11対応について</strong><br>
+        <a href="https://www.mhlw.go.jp/toukei/sippei/" target="_blank">https://www.mhlw.go.jp/toukei/sippei/</a>
+      </div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-num">5</div>
+      <div>
+        <strong style="color: #E2E8F0;">Reed, G. M., et al. (2019). Innovations and changes in the ICD-11 classification of mental, behavioural and neurodevelopmental disorders.</strong>
+        <em>World Psychiatry, 18</em>(1), 3–19.<br>
+        <a href="https://doi.org/10.1002/wps.20611" target="_blank">https://doi.org/10.1002/wps.20611</a>
+      </div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-num">6</div>
+      <div>
+        <strong style="color: #E2E8F0;">Insel, T., et al. (2010). Research Domain Criteria (RDoC): Toward a New Classification Framework for Research on Mental Disorders.</strong>
+        <em>American Journal of Psychiatry, 167</em>(7), 748–751.<br>
+        <a href="https://doi.org/10.1176/appi.ajp.2010.09091379" target="_blank">https://doi.org/10.1176/appi.ajp.2010.09091379</a>
+      </div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-num">7</div>
+      <div>
+        <strong style="color: #E2E8F0;">Frances, A. (2013). Saving Normal: An Insider's Revolt Against Out-of-Control Psychiatric Diagnosis, DSM-5, Big Pharma, and the Medicalization of Ordinary Life.</strong>
+        HarperCollins. （日本語訳：「〈正常〉を救え」岡田俊訳、2013）
+      </div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-num">8</div>
+      <div>
+        <strong style="color: #E2E8F0;">World Health Organization (2001). International Classification of Functioning, Disability and Health (ICF).</strong>
+        Geneva: WHO.<br>
+        <a href="https://www.who.int/standards/classifications/international-classification-of-functioning-disability-and-health" target="_blank">https://www.who.int/standards/classifications/icf</a>
+      </div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-num">9</div>
+      <div>
+        <strong style="color: #E2E8F0;">Jablensky, A. (2016). Toward ICD-11 and DSM-5: Issues Beyond "Harmonization".</strong>
+        <em>World Psychiatry, 15</em>(1), 5–6.<br>
+        <a href="https://doi.org/10.1002/wps.20275" target="_blank">https://doi.org/10.1002/wps.20275</a>
+      </div>
+    </div>
+
+    <div class="source-item">
+      <div class="source-num">10</div>
+      <div>
+        <strong style="color: #E2E8F0;">National Institute of Mental Health. Research Domain Criteria (RDoC).</strong><br>
+        <a href="https://www.nimh.nih.gov/research/research-funded-by-nimh/rdoc" target="_blank">https://www.nimh.nih.gov/research/research-funded-by-nimh/rdoc</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<div class="footer">
+  <div class="container">
+    <p>作成：岡村雄一郎 ｜ キズキビジネスカレッジ（KBC）就労移行支援事業所</p>
+    <p style="margin-top: 6px; font-size: 11px; color: #374151;">本資料は、就労移行支援スタッフの専門性向上を目的として作成された教育資料です。診断・治療の判断は専門医にご相談ください。</p>
+  </div>
+</div>
+
+<script>
+// スクロールプログレス
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = (doc.scrollTop) / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('scrollProgress').style.width = (scrolled * 100) + '%';
+});
+
+// アコーディオン
+function toggleAccordion(header) {
+  const item = header.parentElement;
+  const body = item.querySelector('.accordion-body');
+  const isOpen = item.classList.contains('open');
+  item.classList.toggle('open');
+  body.style.display = isOpen ? 'none' : 'block';
+}
+
+// タブ切り替え
+function switchTab(tab) {
+  document.querySelectorAll('.case-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.case-content').forEach(c => c.classList.remove('active'));
+  document.querySelector('.' + tab + '-tab').classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// グラフアニメーション（スクロール連動）
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.dim-bar-fill').forEach(bar => {
+        bar.style.width = bar.style.width;
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.dimension-chart').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
